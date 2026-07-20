@@ -82,9 +82,13 @@ services:
       POSTGRES_USER: aisoc
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in Dokploy}
     # Published on the VM for direct injection with psql/DBeaver via the VM IP.
+    # Host side is 55432 (not 5432) because this dev VM already runs other
+    # Postgres instances on 5432 — a bare 5432 publish fails with "port is
+    # already allocated". Container port stays 5432, so nothing inside the
+    # stack changes; connect from your machine to <VM-IP>:55432.
     # Dev-VM only. Remove this block for any internet-facing deployment.
     ports:
-      - "5432:5432"
+      - "55432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./services/api/migrations:/docker-entrypoint-initdb.d:ro
